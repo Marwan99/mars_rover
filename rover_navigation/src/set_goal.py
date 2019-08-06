@@ -25,7 +25,7 @@ if not rospy.is_shutdown():
 
     goal.target_pose.pose.position.x = float(sys.argv[1])
     goal.target_pose.pose.position.y = float(sys.argv[2])#0.25
-    goal.target_pose.pose.position.z = 0.0
+    goal.target_pose.pose.position.z = 0
 
     goal_quat = tf.transformations.quaternion_from_euler(0, 0,radians(float(sys.argv[3])))
     goal.target_pose.pose.orientation = Quaternion(*goal_quat)
