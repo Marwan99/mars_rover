@@ -4,4 +4,6 @@
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="rover_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model rover"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
 </launch>
