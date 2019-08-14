@@ -14,6 +14,10 @@ source devel/setup.bash
 ```
 
 ## Usage
+To view the robot model in RVIZ:
+```bash
+roslaunch rover_description view_model.launch
+```
 To run a rover simulation in Gazebo:
 ```bash
 roslaunch rover_description rover_description.launch
