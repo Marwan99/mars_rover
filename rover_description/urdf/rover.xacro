@@ -133,6 +133,17 @@
     </collision>
   </link>
 
+  <transmission name="arm_joint_0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_joint_0">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_joint_0_Motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>10</mechanicalReduction>
+    </actuator>
+  </transmission>
+
   <joint name="joint_base_side_plate" type="fixed">
     <parent link="arm_base_link"/>
     <child link="side_plate"/>
@@ -160,6 +171,17 @@
       </geometry>
     </collision>
   </link>
+
+  <transmission name="joint_base_side_plate_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint_base_side_plate">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_joint_0_Motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>10</mechanicalReduction>
+    </actuator>
+  </transmission>
 
   <joint name="arm_joint_1" type="revolute">
     <parent link="side_plate"/>
@@ -191,6 +213,17 @@
     </inertial>
   </link>
 
+  <transmission name="arm_link_1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_link_1">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_link_1_Motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>10</mechanicalReduction>
+    </actuator>
+  </transmission>
+
   <joint name="arm_joint_2" type="revolute">
     <parent link="arm_link_1"/>
     <child link="arm_link_2"/>
@@ -221,6 +254,17 @@
     </inertial>
   </link>
 
+  <transmission name="arm_link_2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_link_2">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_link_2_Motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>10</mechanicalReduction>
+    </actuator>
+  </transmission>
+
   <joint name="arm_joint_3" type="revolute">
     <parent link="arm_link_2"/>
     <child link="end_effector"/>
@@ -250,5 +294,16 @@
       </geometry>
     </collision>
   </link>
+
+  <transmission name="arm_link_3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_link_3">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_link_3_Motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>10</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 </robot>
