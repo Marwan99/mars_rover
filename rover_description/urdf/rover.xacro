@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
-
 <robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
   <xacro:property name="PI" value="3.1415926535897931"/>
 
   <xacro:property name="chassisHeight" value="0.3"/>
@@ -11,9 +9,10 @@
 
   <!--stick out 0.285 wheel drop = 0.12-->
   <xacro:property name="wheelWidth" value="0.075"/>
-  <xacro:property name="wheelRadius" value="0.21"/>
+  <xacro:property name="wheelRadius" value="0.18"/>
   <xacro:property name="wheelPos" value="0.3"/>
   <xacro:property name="wheelMass" value="5"/>
+  <xacro:property name="wheelDrop" value="-0.12"/>
 
   <xacro:property name="cameraSize" value="0.05"/>
   <xacro:property name="cameraMass" value="0.1"/>
@@ -26,25 +25,24 @@
   <xacro:include filename="$(find rover_description)/urdf/macros.xacro"/>
   <!--xacro:include filename="$(find rover_description)/urdf/arm.xacro"/-->
 
-  <xacro:property name="PI" value="3.1415926535897931"/>
   <xacro:property name="plateLength" value="0.180"/>
   <xacro:property name="plateWidth" value="0.25"/>
   <xacro:property name="plateMass" value="0.267"/>
   <xacro:property name="plateHeight" value="0.006"/>
   <xacro:property name="baseHeight" value="0.0635"/>
   <xacro:property name="baseRadius" value="0.12"/>
-  <xacro:property name="motor2Length" value="0.36"/>
-  <xacro:property name="motor3Length" value="0.5"/>
+  <xacro:property name="arm_link_1Length" value="0.36"/>
+  <xacro:property name="arm_link_2Length" value="0.5"/>
   <xacro:property name="chassisWidth" value="0.45"/>
   <xacro:property name="baseDamping" value="0.1"/>
   <xacro:property name="sidePlateLenght" value="0.25"/>
   <xacro:property name="sidePlateWidth" value="0.05"/>
   <xacro:property name="sidePlateHeight" value="0.165"/>
-  <xacro:property name="motor2Length" value="0.36"/>
-  <xacro:property name="motor2Radius" value="0.08"/>
-  <xacro:property name="sidePlate2Motor2Damping" value="0.1"/>
-  <xacro:property name="motor3Length" value="0.5"/>
-  <xacro:property name="motor3Radius" value="0.05"/>
+  <xacro:property name="arm_link_1Length" value="0.36"/>
+  <xacro:property name="arm_link_1Radius" value="0.08"/>
+  <xacro:property name="sidePlate2arm_link_1Damping" value="0.1"/>
+  <xacro:property name="arm_link_2Length" value="0.5"/>
+  <xacro:property name="arm_link_2Radius" value="0.05"/>
   <xacro:property name="excavatorLenght" value="0.005"/>
   <xacro:property name="excavatorWidth" value="0.078"/>
   <xacro:property name="excavatorHeight" value="0.078"/>
@@ -105,11 +103,11 @@
     </inertial>
   </link>
 
-  <joint name="arm_base_joint" type="revolute">
+  <joint name="arm_joint_0" type="revolute">
     <axis xyz="0 0 1"/>
     <parent link="base_link"/>
     <child link="arm_base_link"/>
-    <limit lower="-90" upper="90" effort="1" velocity="2"/>
+    <limit lower="-2" upper="2" effort="1" velocity="2"/>
     <origin xyz="0 0 ${chassisHeight/2}" rpy="0 0 0"/>
   </joint>
 
@@ -145,7 +143,8 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.130"/>
-      <inertia ixx="1837000" ixy="120300" ixz="279500" iyy="1651000" iyz="620400" izz="34900"/>
+      <!--box_inertia m="0.130" x="${sidePlateLenght}" y="${sidePlateWidth}" z="${sidePlateHeight}"/-->
+      <box_inertia m="0.130" x="${sidePlateLenght}" y="${sidePlateWidth}" z="${sidePlateHeight}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 ${sidePlateHeight/2}" rpy="0 0 0"/>
@@ -162,72 +161,72 @@
     </collision>
   </link>
 
-  <joint name="side_motor2" type="revolute">
+  <joint name="arm_joint_1" type="revolute">
     <parent link="side_plate"/>
-    <child link="motor2"/>
+    <child link="arm_link_1"/>
     <axis xyz=" 0 1 0"/>
     <origin xyz="0 0  ${sidePlateHeight}" rpy="0 0 0"/>
-    <dynamics damping="${sidePlate2Motor2Damping}"/>
+    <dynamics damping="${sidePlate2arm_link_1Damping}"/>
     <limit effort="100.0" velocity="0.5" lower="-1.571" upper="1.571"/>
   </joint>
 
-  <link name="motor2">
+  <link name="arm_link_1">
     <visual>
-      <origin xyz="0 0 ${motor2Length/2}" rpy="0 0 0"/>
+      <origin xyz="0 0 ${arm_link_1Length/2}" rpy="0 0 0"/>
       <material name="black"/>
       <geometry>
-        <cylinder length="${motor2Length}" radius="${motor2Radius}"/>
+        <cylinder length="${arm_link_1Length}" radius="${arm_link_1Radius}"/>
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 ${motor2Length/2}" rpy="0 0 0"/>
+      <origin xyz="0 0 ${arm_link_1Length/2}" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="${motor2Length}" radius="${motor2Radius}"/>
+        <cylinder length="${arm_link_1Length}" radius="${arm_link_1Radius}"/>
       </geometry>
     </collision>
     <inertial>
       <origin xyz="0.416 0 0.154" rpy="0 0 0"/>
       <mass value="2"/>
-      <inertia ixx="1940000" ixy="0" ixz="-1620000" iyy="3217000" iyz="0" izz="1940000"/>
+      <cylinder_inertia m="2" r="${arm_link_1Radius}" h="${arm_link_1Length}"/>
     </inertial>
   </link>
 
-  <joint name="motor2_motor3_joint" type="revolute">
-    <parent link="motor2"/>
-    <child link="motor3"/>
+  <joint name="arm_joint_2" type="revolute">
+    <parent link="arm_link_1"/>
+    <child link="arm_link_2"/>
     <axis xyz=" 0 1 0"/>
-    <origin xyz="0 0 ${motor2Length}" rpy="0 0 0"/>
-    <dynamics damping="${sidePlate2Motor2Damping}"/>
+    <origin xyz="0 0 ${arm_link_1Length}" rpy="0 0 0"/>
+    <dynamics damping="${sidePlate2arm_link_1Damping}"/>
     <limit effort="100.0" velocity="0.5" lower="-1.571" upper="1.571"/>
   </joint>
 
-  <link name="motor3">
+  <link name="arm_link_2">
     <visual>
-      <origin xyz="0 0 ${motor3Length/2}" rpy="0 0 0"/>
+      <origin xyz="0 0 ${arm_link_2Length/2}" rpy="0 0 0"/>
       <material name="black"/>
       <geometry>
-        <cylinder length="${motor3Length}" radius="${motor3Radius}"/>
+        <cylinder length="${arm_link_2Length}" radius="${arm_link_2Radius}"/>
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 ${motor3Length/2}" rpy="0 0 0"/>
+      <origin xyz="0 0 ${arm_link_2Length/2}" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="${motor3Length}" radius="${motor3Radius}"/>
+        <cylinder length="${arm_link_2Length}" radius="${arm_link_2Radius}"/>
       </geometry>
     </collision>
     <inertial>
       <origin xyz="0.5 0 0.5" rpy="0 0 0"/>
       <mass value="1"/>
-      <inertia ixx="57630000" ixy="0" ixz="-50390000" iyy="116300000" iyz="0" izz="59050000"/>
+      <cylinder_inertia m="1" r="${arm_link_2Radius}" h="${arm_link_2Length}"/>
     </inertial>
   </link>
 
-  <joint name="motor3_end_effector_joint" type="revolute">
-    <parent link="motor3"/>
+  <joint name="arm_joint_3" type="revolute">
+    <parent link="arm_link_2"/>
     <child link="end_effector"/>
     <axis xyz=" 0 1 0"/>
-    <origin xyz="0 0 ${motor3Length}" rpy="0 0 0"/>
-    <dynamics damping="${sidePlate2Motor2Damping}"/>
+    <origin xyz="0 0 ${arm_link_2Length}" rpy="0 0 0"/>
+    <dynamics damping="${sidePlate2arm_link_1Damping}"/>
     <limit effort="100.0" velocity="0.5" lower="-1.571" upper="1.571"/>
   </joint>
 
@@ -235,7 +234,7 @@
     <inertial>
       <origin xyz="0 0 1.0945" rpy="0 0 0"/>
       <mass value="0.1"/>
-      <inertia ixx="13410" ixy="0.0" ixz="0.0" iyy="13850" iyz="0.0" izz="27150"/>
+      <box_inertia m="0.1" x="${excavatorLenght}" y="${excavatorWidth}" z="${excavatorHeight}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 ${excavatorHeight/2}" rpy="0 0 0"/>
