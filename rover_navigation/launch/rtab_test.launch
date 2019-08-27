@@ -1,0 +1,25 @@
+<launch>
+  <master auto="start"/>
+
+  <!-- roslaunch realsense2_camera rs_camera.launch align_depth:=true unite_imu_method:="linear_interpolation" -->
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="align_depth" value="true"/>
+    <arg name="unite_imu_method" value="linear_interpolation"/>
+  </include>
+
+  <!-- rosrun imu_filter_madgwick imu_filter_node _use_mag:=false _publish_tf:=false _world_frame:="enu" /imu/data_raw:=/camera/imu /imu/data:=/rtabmap/imu -->
+  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter">
+    <param name="_use_mag" value="false"/>
+    <param name="_publish_tf" value="false"/>
+    <param name="_world_frame" value="enu"/>
+    <remap from="/imu/data_raw" to="/camera/imu"/>
+    <remap from="/imu/data" to="/rtabmap/imu"/>
+  </node>
+
+  <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+    <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw"/>
+    <arg name="rgb_topic" value="/camera/color/image_raw"/>
+    <arg name="camera_info_topic" value="/camera/color/camera_info"/>
+    <arg name="approx_sync" value="false"/>
+  </include>
+</launch>
